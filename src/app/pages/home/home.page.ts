@@ -1,53 +1,95 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common'; // <-- Necesario para *ngFor
-import { FormsModule } from '@angular/forms';
-import { 
-  IonHeader, 
-  IonToolbar, 
-  IonTitle, 
-  IonContent, 
-  IonItem, 
-  IonInput, 
-  IonButton, 
+import { Component, inject } from '@angular/core';
+import {
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonItem,
+  IonButton,
   IonIcon,
-  IonList,  // <-- Componente para la lista
-  IonLabel  // <-- Componente para el texto de la tarea
+  IonInput,
+  IonLabel,
+  IonList,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { addOutline } from 'ionicons/icons';
+
+// Iportación de Angular
+import { FormsModule } from '@angular/forms';
+
+// Importación del servicio Alert
+import { Alert } from '../../services/alert';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
-  standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-    IonHeader, 
-    IonToolbar, 
-    IonTitle, 
-    IonContent, 
-    IonItem, 
-    IonInput, 
-    IonButton, 
-    IonIcon,
     IonList,
-    IonLabel
+    IonLabel,
+    IonButton,
+    IonIcon,
+    IonInput,
+    IonItem,
+    IonHeader,
+    IonToolbar,
+    IonTitle,
+    IonContent,
+    FormsModule,
   ],
 })
 export class HomePage {
+  // Injectamos el servicio Alert en
+  // HomePage para poder utilizarlo en esta página.
+  private alertService: Alert = inject(Alert);
+
   public task: string = '';
-  public tasks: string[] = [];
+  public tasks: string[] = [
+    'Comprar Leche',
+    'Dormir',
+    'Descansar',
+    'Estudiar',
+    'Ver la Novela',
+  ];
 
   constructor() {
-    addIcons({ addOutline });
+    addIcons({
+      addOutline,
+    });
   }
 
   addTask() {
     console.log('Variable: ', this.task);
-    this.tasks.push(this.task);
-    console.log('Array: ', this.tasks);
-    this.task = ''; // Limpia el input para ingresar una nueva tarea
+    if (!this.ifExistTask(this.task)) {
+      this.tasks.push(this.task);
+      console.log('Array: ', this.tasks);
+      this.task = '';
+      console.log('Tarea agregada correctamente');
+      this.alertService.alertMessage(
+        'Exito',
+        'Registro de Tareas',
+        'La tarea se ha agregado correctamente'
+      );
+    } else {
+      console.log('La tarea ya existe');
+      this.alertService.alertMessage(
+        'Error',
+        'Registro de Tareas',
+        'La tarea ya existe'
+      );
+    }
+  }
+
+  private ifExistTask(task: string) {
+    // Verifica si la tarea ya existe en el array de tareas
+    // Con el metodo find() se busca en el array de tareas si existe la tarea que se le pasa como parámetro
+    return this.tasks.find(
+      // Comparamos la tarea que queremos agregar con las tareas del arreglo
+      // toUpperCase(): Convertir a mayúsculaspara que la comparación
+      // no sea sensible a mayúsculas y minúsculas
+      // trim(): Elimina los espacios en blanco al inicio
+      //  y al final de la cadena
+      (item: string) => item.toLowerCase().trim() === task.toLowerCase().trim()
+    );
   }
 }

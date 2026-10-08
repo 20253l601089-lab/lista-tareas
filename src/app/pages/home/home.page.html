@@ -1,27 +1,43 @@
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title class="ion-text-center">Mis Tareas</ion-title>
+    <ion-title class="ion-text-center ion-title-bold"> Mis Tareas </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-
-  <!-- Entrada para agregar tareas -->
+<ion-content [fullscreen]="true">
+  <!-- IonItem: Almacenar diferentes elementos:
+   Imagenes, Inputs, Botones o Formularios
+  -->
   <ion-item>
-    <ion-input 
-      [(ngModel)]="task" 
-      placeholder="Escribe una tarea...">
-    </ion-input>
-    <ion-button (click)="addTask()" slot="end">
+    <!-- IonInput: Por defecto es de tipo text.
+    Recomendación:  Siempre indicar el name -->
+    <ion-input type="text" placeholder="Nueva Tarea" name="task" /* Tow-Way
+    Binding (Enlace Bidireccional) */ [(ngModel)] = "task" />
+
+    <ion-button (click)="addTask()" [disabled]="!task">
       <ion-icon name="add-outline"></ion-icon>
     </ion-button>
   </ion-item>
-
-  <!-- Lista de tareas agregadas -->
+  @if (tasks.length == 0) {
+  <ion-item class="ion-text-center" lines="none">
+    <ion-label>No hay tareas pendientes</ion-label>
+  </ion-item>
+  } @else {
+  <!-- IonList: Contenedor de elementos de lista -->
   <ion-list>
-    <ion-item *ngFor="let t of tasks">
-      <ion-label>{{ t }}</ion-label>
+    <!-- 
+    track task: Le indica a Angular como identificar
+    cada elemento paran poder actualizar el
+    DOM (Document Object Model 
+    o Modelo de Objetos del Doumento) de
+    forma eficiente.
+    -->
+    @for (task of tasks; track task){
+    <ion-item>
+      <!-- Interpolación -->
+      <ion-label>{{task}}</ion-label>
     </ion-item>
+    }
   </ion-list>
-
+  }
 </ion-content>
