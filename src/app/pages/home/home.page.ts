@@ -68,11 +68,6 @@ export class HomePage {
 
   // Se ejecuta cada vez que la página va a entrar en pantalla
   ionViewWillEnter() {
-    this.loadTasks();
-  }
-
-  // Carga las tareas desde Capacitor Preferences
-  private loadTasks() {
     Preferences.get({ key: this.KEY_TASKS }).then((res) => {
       if (res.value) {
         this.tasks = JSON.parse(res.value);
